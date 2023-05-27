@@ -1,0 +1,208 @@
+<set_quantifier> ::= DISTINCT | ALL
+<asterisk> ::= *
+<comma> ::= ,
+
+<chars> ::= [a-zA-Z_]*
+<identifier> ::= <chars>
+<column_name> ::= <identifier>
+
+<plus_sign> ::= +
+<minus_sign> ::= -
+<solidus> ::= /
+<sign> ::= <plus_sign> | <minus_sign>
+<period> ::= .
+<unsigned_integer> ::=  <digit>
+<digit> ::= [0-9]
+
+<left_paren> ::= (
+<right_paren> ::= )
+
+<truth_value> ::= TRUE | FALSE | UNKNOWN
+
+
+<value_expression> ::= <number_value_expression> | <string_value_expression>
+
+<number_value_expression> ::= <term> | <number_value_expression> <plus_sign> <term> | <number_value_expression> <minus_sign> <term>
+
+<term> ::= <factor> | <term> <asterisk> <factor> | <term> <solidus> <factor>
+
+<facor> ::= [<sign>] <number_primary>
+
+<number_primary> ::= <value_expression_primary>
+
+<value_expression_primary> ::= <unsigned_literal>
+
+<unsigned_literal> ::=  <unsigned_numeric_literal> | <general_literal>
+
+<unsigned_numeric_literal> ::=  <exact_numeric_literal>
+
+<exact_numeric_literal> ::=  <unsigned_integer> [ <period> [ <unsigned_integer> ] ] | <period> <unsigned_integer>
+
+<general_literal> ::= <chars>
+
+<string_value_expression> ::= <chars>
+
+
+
+
+<query> ::= SELECT [ <set_quantifier> ] <select_list> <table_expression>
+
+<select_list> ::= <asterisk> | <select_sublist> [ {<comma> <select_sublist>}... ]
+
+<select_sublist> ::=  <derived_column> | <qualifier> <period> <asterisk>
+
+<derived_column> ::=  <value_expression> [ <as_clause> ]
+
+<as_clause> ::=   [ AS ] <column_name>
+
+<qualifier> ::= <table_name> | <correlation_name>
+
+<correlation_name> ::= <identifier>
+
+<table_name> ::= <qualified_name>
+
+<qualified_name> ::= [ <schema_name> <period> ] <qualified_identifier>
+
+<schema_name> ::=  [ <catalog_name> <period> ] <unqualified_schema_name>
+
+<catalog_name> ::= <identifier>
+
+<unqualified_schema_name> ::= <identifier>
+
+<qualified_identifier> ::= <identifier>
+
+<qualified_local_table_name>
+
+
+// table
+
+<table_expression> ::= <from_clause> [ <where_clause> ] [ <group_by_clause> ] [ <having_clause> ]
+
+<from_clause> ::= FROM <table_reference> [ { <comma> <table_reference> }... ]
+
+<table_reference> ::=
+    	<table_name> [ <correlation_specification> ]
+     |  <derived_table> <correlation_specification>
+     |  <joined_table>
+
+
+<correlation_specification> ::= [ AS ] <correlation_name> [ <left_paren> <derived_column_list> <right_paren> ]
+
+<derived_table> ::= <table_subquery>
+
+<table_subquery> ::= <subquery>
+
+<subquery> ::= <left_paren> <query_expression> <right_paren>
+
+
+<query_expression> ::= <query_expression_body>
+
+<query_expression_body> ::= <non_join_query_expression> | <joined_table>
+
+<non_join_query_expression> ::= <non_join_query_term>
+     |  <query_expression_body> UNION [ ALL | DISTINCT ] <query_term>
+
+
+<query_term> ::= <non_join_query_term> | <joined_table>
+
+<non_join_query_term> ::= <non_join_query_primary>
+
+<query_primary> ::= <non_join_query_primary> | <joined_table>
+
+<non_join_query_primary> ::= <simple_table> | <left_paren> <non_join_query_expression> <right_paren>
+
+<simple_table> ::= <query_specification>
+
+
+<query_specification> ::= SELECT [ <set_quantifier> ] <select_list> <table_expression>
+
+<set_quantifier> ::= DISTINCT | ALL
+
+
+<derived_column_list> ::= <column_name_list>
+
+<column_name_list> ::= <column_name> [ {<comma> <column_name>}...]
+
+<joined_table> ::= <qualified_join> | <left_paren> <joined_table> <right_paren>
+
+<qualified_join> ::=  <table_reference> [ <join_type> ] JOIN <table_reference> [ <join_specification> ]
+
+<join_type> ::=  INNER | <outer_join_type> [ OUTER ] | UNION
+
+<outer_join_type> ::=   LEFT | RIGHT | FULL
+
+<join_specification> ::= <join_condition> | <named_columns_join>
+
+<join_condition> ::= ON <search_condition>
+
+<search_condition> ::= <boolean_term> | <search_condition> OR <boolean_term>
+
+<boolean_term> ::= <boolean_factor> | <boolean_term> AND <boolean_factor>
+
+<boolean_factor> ::= [ NOT ] <boolean_test>
+
+<boolean_test> ::= <boolean_primary> [ IS [ NOT ] <truth_value> ]
+
+<boolean_primary> ::= <predicate> | <left_paren> <search_condition> <right_paren>
+
+
+<predicate> ::=
+    	<comparison_predicate>
+     | <between_predicate>
+     | <in_predicate>
+     | <like_predicate>
+     | <null_predicate>
+
+
+<comparison_predicate> ::= <row_value_constructor> <comp_op> <row_value_constructor>
+
+<equals_operator> ::= =
+<not_equals_operator> ::= <>
+<less_than_operator> ::= <
+<greater_than_operator> ::= >
+<less_than_or_equals_operator> ::= <=
+<greater_than_or_equals_operator> ::= >=
+
+<comp_op> ::=
+         <equals_operator>
+     | <not_equals_operator>
+     | <less_than_operator>
+     | <greater_than_operator>
+     | <less_than_or_equals_operator>
+     | <greater_than_or_equals_operator>
+
+
+<row_value_constructor> ::=  <row_value_constructor_element>
+     | <left_paren> <row_value_constructor_list> <right_paren>
+     | <row_subquery>
+
+
+<row_value_constructor_element> ::=  <value_expression>
+     | <null_specification>
+     | <default_specification>
+
+<null_specification> ::= NULL
+
+<default_specification> = DEFAULT
+
+
+<row_value_constructor_list> ::=  <row_value_constructor_element> [ { <comma> <row_value_constructor_element> } ... ]
+
+<row_subquery> ::= <subquery>
+
+
+<between_predicate> ::= <row_value_constructor> [ NOT ] BETWEEN <row_value_constructor> AND <row_value_constructor>
+
+<in_predicate>    ::=   <row_value_constructor> [ NOT ] IN <in_predicate_value>
+
+<in_predicate_value>    ::=   <table_subquery> | <left_paren> <in_value_list> <right_paren>
+
+<in_value_list>    ::=   <value_expression> { <comma> <value_expression> } ...
+
+<like_predicate>    ::=   <match_value> [ NOT ] LIKE <pattern>
+
+<match_value> ::=   <identifier>
+
+<pattern>    ::=   <string>   // 简单点
+
+<null_predicate>    ::=   <row_value_constructor> IS [ NOT ] NULL

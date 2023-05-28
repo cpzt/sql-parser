@@ -1,23 +1,35 @@
-<set_quantifier> ::= DISTINCT | ALL
-<asterisk> ::= *
-<comma> ::= ,
 
-<chars> ::= [a-zA-Z_]*
-<identifier> ::= <chars>
-<column_name> ::= <identifier>
-
+# 操作符
 <plus_sign> ::= +
 <minus_sign> ::= -
+<asterisk> ::= *
 <solidus> ::= /
 <sign> ::= <plus_sign> | <minus_sign>
-<period> ::= .
-<unsigned_integer> ::=  <digit>
-<digit> ::= [0-9]
 
+# 符号
+<comma> ::= ,
+<period> ::= .
 <left_paren> ::= (
 <right_paren> ::= )
 
+
+# 基础类型
+<chars> ::= [a-zA-Z_]*
+<digit> ::= [0-9]
+<unsigned_integer> ::=  <digit>
+
+# 基础派生类
 <truth_value> ::= TRUE | FALSE | UNKNOWN
+<identifier> ::= <chars>
+<column_name> ::= <identifier>
+<set_quantifier> ::= DISTINCT | ALL
+<number> ::= [ sign ] <digit> [ <period> [ <digit> ] ]
+
+
+<general_literal> ::= <chars>
+<exact_numeric_literal> ::=  <unsigned_integer> [ <period> [ <unsigned_integer> ] ] | <period> <unsigned_integer>
+<unsigned_numeric_literal> ::=  <exact_numeric_literal>
+<unsigned_literal> ::=  <unsigned_numeric_literal> | <general_literal>
 
 
 <value_expression> ::= <number_value_expression> | <string_value_expression>
@@ -32,13 +44,13 @@
 
 <value_expression_primary> ::= <unsigned_literal>
 
-<unsigned_literal> ::=  <unsigned_numeric_literal> | <general_literal>
 
-<unsigned_numeric_literal> ::=  <exact_numeric_literal>
 
-<exact_numeric_literal> ::=  <unsigned_integer> [ <period> [ <unsigned_integer> ] ] | <period> <unsigned_integer>
 
-<general_literal> ::= <chars>
+
+
+
+
 
 <string_value_expression> ::= <chars>
 
@@ -115,8 +127,6 @@
 
 
 <query_specification> ::= SELECT [ <set_quantifier> ] <select_list> <table_expression>
-
-<set_quantifier> ::= DISTINCT | ALL
 
 
 <derived_column_list> ::= <column_name_list>

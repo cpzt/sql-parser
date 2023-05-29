@@ -16,45 +16,58 @@
 # 基础类型
 <chars> ::= [a-zA-Z_]*
 <digit> ::= [0-9]
-<unsigned_integer> ::=  <digit>
 
 # 基础派生类
 <truth_value> ::= TRUE | FALSE | UNKNOWN
 <identifier> ::= <chars>
 <column_name> ::= <identifier>
 <set_quantifier> ::= DISTINCT | ALL
-<number> ::= [ sign ] <digit> [ <period> [ <digit> ] ]
+<unsigned_number> ::= <digit> [ <period> [ <digit> ] | <period> <digit>
+<number> ::= [ sign ] [unsigned_number]
 
 
-<general_literal> ::= <chars>
-<exact_numeric_literal> ::=  <unsigned_integer> [ <period> [ <unsigned_integer> ] ] | <period> <unsigned_integer>
-<unsigned_numeric_literal> ::=  <exact_numeric_literal>
-<unsigned_literal> ::=  <unsigned_numeric_literal> | <general_literal>
+# 暂时只支持数字与字符串
+<value_expression> ::= <numeric_value_expression> | <string_value_expression>
 
-
-<value_expression> ::= <number_value_expression> | <string_value_expression>
-
-<number_value_expression> ::= <term> | <number_value_expression> <plus_sign> <term> | <number_value_expression> <minus_sign> <term>
+<numeric_value_expression> ::= <term> | <numeric_value_expression> <plus_sign> <term> | <numeric_value_expression> <minus_sign> <term>
 
 <term> ::= <factor> | <term> <asterisk> <factor> | <term> <solidus> <factor>
 
-<facor> ::= [<sign>] <number_primary>
+<factor> ::= [<sign>] <numeric_primary>
 
-<number_primary> ::= <value_expression_primary>
-
-<value_expression_primary> ::= <unsigned_literal>
+<numeric_primary> ::= <unsigned_number> | <column_reference> | <scalar_subquery> | <left_paren> <value_expression> <right_parent>
 
 
+# case, 暂不支持case
+<case_expression> ::=
+         CASE <case_operand>
+             <simple_when_clause> ...
+             [ <else_clause> ]
+         END
+
+<case_operand> ::= <value_expression>
+
+<simple_when_clause> ::=  WHEN <when_operand> THEN <result>
+
+<when_operand> ::= <value_expression>
+
+<result> ::= <result_expression> | NULL
+
+<result_expression> ::= <value_expression>
 
 
+# cast, 暂不支持cast
+# <cast_expression> ::=
+#        CAST <left_paren> <cast_operand> AS <cast_target> <right_paren>
+# <cast_operand> ::= <value_expression> | NULL
+# <cast_target> ::= <qualified_name> | <data_type>
 
 
+<column_reference> ::= [ <qualifier> <period> ] <column_name>
 
-
+<scalar_subquery> ::= <subquery>
 
 <string_value_expression> ::= <chars>
-
-
 
 
 <query> ::= SELECT [ <set_quantifier> ] <select_list> <table_expression>

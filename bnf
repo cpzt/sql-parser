@@ -14,7 +14,7 @@
 
 
 # 基础类型
-<chars> ::= [a-zA-Z_]*
+<chars> ::= [a-zA-Z_]
 <digit> ::= [0-9]
 
 # 基础派生类
@@ -22,7 +22,7 @@
 <identifier> ::= <chars>
 <column_name> ::= <identifier>
 <set_quantifier> ::= DISTINCT | ALL
-<unsigned_number> ::= <digit> [ <period> [ <digit> ] | <period> <digit>
+<unsigned_number> ::= <digit> [ <period> [ <digit> ] ] | <period> <digit>
 <number> ::= [ sign ] [unsigned_number]
 
 
